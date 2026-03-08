@@ -25,6 +25,27 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// Mobile menu toggle functionality
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
+
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+
+        // Animate hamburger icon
+        this.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('#navMenu a').forEach(link => {
+        link.addEventListener('click', function() {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        });
+    });
+}
+
 // Simple animation for research cards on scroll
 const researchCards = document.querySelectorAll('.research-card');
 
