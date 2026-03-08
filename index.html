@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Research Fellow Profile</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 </head>
 <body>
     <header>
@@ -251,22 +252,16 @@
             </div>
         </section>
 
-        <!--
         <section id="3d-model" class="section">
             <div class="container">
                 <h2>3D Bone Model</h2>
                 <div class="model-container">
-                    <div id="model-viewer" style="width: 100%; height: 500px; border: 1px solid #ddd; border-radius: 8px; background-color: #f8f9fa;">
-                        <p style="text-align: center; padding: 20px; color: #666;">
-                            Interactive 3D visualization of the bone model<br>
-                            <small>(STL file loading requires a web server environment)</small>
-                        </p>
-                    </div>
-                    <p style="text-align: center; margin-top: 10px;">Interactive 3D visualization of the bone model</p>
+				<script type="module" src="stl-viewer-main/stl-viewer.js"></script>
+					<stl-viewer model="STLs/VHM_Right_Bone_Femur_smooth.stl"></stl-viewer>
+                    <p style="text-align: center; margin-top: 10px;">Interactive 3D visualization of the right femur bone</p>
                 </div>
             </div>
         </section>
-        -->
 
         <section id="contact" class="section">
             <div class="container">
