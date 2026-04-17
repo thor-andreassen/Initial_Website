@@ -12,7 +12,7 @@ There are a series of webpages with different information on them.
 - `/Videos` — This folder contains videos of talks that are place on the wesbite
 - `/STLs` — This folder contains stl files of 3d geometries that are placed ont he website for people to interact with
 - `/Papers` — This folder contains pdf files for research papers that are included on the papers
-- `/CV` — This folder conatins files of important details to write into relevant sections.
+- `/CV` — This folder conatins files of important details to write into relevant sections.444
 - The project is structured into a series of html webpages that link to one another that contain different information like papers, or about me, or presentations.
 - The main page is `index.html` which points to `home.html`
 
@@ -23,5 +23,6 @@ There are a series of webpages with different information on them.
 - Always make the webpages created look modern and pretty with a nice user interface
 - Never make up any details about Dr. Andreassen or his background or the work itself.
 - Always add details by only using descriptions and information provided in relevant source files and when explicitly instructed to do so.
+- Whenever you are asked to add a webpage, make sure to update the list of webpages in all of the existing ones to put to this one. All webpages should link to all others in the same order each time.
 ## Current Focus
 New tabs for awards and honors
