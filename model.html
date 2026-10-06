@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model - Thor E. Andreassen, PhD</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
 </head>
 <body>
     <header>
@@ -39,16 +42,18 @@
         <section id="model" class="section">
             <div class="container">
                 <h2>Visible Human Male Model</h2>
-                <div class="model_1">
-                    <h3>Full 3D Model of Visible Human Male from DOI: <a href="https://doi.org/10.1038/s41597-022-01905-2"> DOI </a> </h3>
-                    <script src="https://embed.github.com/view/3d/thor-andreassen/Initial_Website/main/STLs/VHM_Full.stl"></script>
+                <div class="model-container">
+                    <h3>Full 3D Model of Visible Human Male from DOI: <a href="https://doi.org/10.1038/s41597-022-01905-2" target="_blank"> DOI </a> </h3>
+                    <div id="model1" class="model-viewer"></div>
+                    <p>Loading model...</p>
                 </div>
             </div>
 			<div class="container">
                 <h2>Full Wrist Model</h2>
-                <div class="model_2">
-                    <h3>Full 3D Model of Human Wrist from DOI: <a href="https://doi.org/10.5281/zenodo.18166548"> DOI </a> </h3>
-                    <script src="https://embed.github.com/view/3d/thor-andreassen/Initial_Website/main/STLs/Participant_2_Full_Hand.stl"></script>
+                <div class="model-container">
+                    <h3>Full 3D Model of Human Wrist from DOI: <a href="https://doi.org/10.5281/zenodo.18166548" target="_blank"> DOI </a> </h3>
+                    <div id="model2" class="model-viewer"></div>
+                    <p>Loading model...</p>
                 </div>
             </div>
         </section>
@@ -61,5 +66,135 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Initialize 3D models
+        document.addEventListener('DOMContentLoaded', function() {
+            // Model 1: Visible Human Male
+            const model1Container = document.getElementById('model1');
+            initThreeJSViewer(model1Container, 'https://raw.githubusercontent.com/thor-andreassen/Initial_Website/main/STLs/VHM_Full.stl');
+
+            // Model 2: Full Wrist
+            const model2Container = document.getElementById('model2');
+            initThreeJSViewer(model2Container, 'https://raw.githubusercontent.com/thor-andreassen/Initial_Website/main/STLs/Participant_2_Full_Hand.stl');
+        });
+
+        function initThreeJSViewer(container, stlUrl) {
+            // Scene setup
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf8f9fa);
+
+            // Camera setup
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+
+            // Set initial camera position for better default view
+            if (stlUrl.includes('VHM_Full')) {
+                // For the full human model, set a more frontal view
+                camera.position.set(0, 0, 3);
+            } else {
+                // For the wrist model, set a better side view
+                camera.position.set(0, 0, 2);
+            }
+
+            // Renderer setup
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+
+            // Load STL model using the STLLoader
+            const loader = new THREE.STLLoader();
+
+            // Create a fallback message in case loading fails
+            const loadingMessage = document.createElement('p');
+            loadingMessage.textContent = 'Loading model from GitHub...';
+            loadingMessage.style.textAlign = 'center';
+            loadingMessage.style.marginTop = '10px';
+            container.appendChild(loadingMessage);
+
+            loader.load(
+                stlUrl,
+                function (geometry) {
+                    // Remove loading message
+                    if (loadingMessage.parentNode) {
+                        loadingMessage.parentNode.removeChild(loadingMessage);
+                    }
+
+                    // Center the geometry
+                    geometry.computeBoundingBox();
+                    const center = geometry.boundingBox.getCenter(new THREE.Vector3());
+                    geometry.translate(-center.x, -center.y, -center.z);
+
+                    // Create material and mesh
+                    const material = new THREE.MeshPhongMaterial({
+                        color: 0x3498db,
+                        specular: 0x111111,
+                        shininess: 30,
+                        flatShading: true
+                    });
+
+                    const mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+
+                    // Add orbit controls
+                    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                    controls.enableDamping = true;
+                    controls.dampingFactor = 0.05;
+
+                    // Handle window resize
+                    function onWindowResize() {
+                        camera.aspect = container.clientWidth / container.clientHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(container.clientWidth, container.clientHeight);
+                    }
+
+                    window.addEventListener('resize', onWindowResize);
+
+                    // Animation loop
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        controls.update();
+                        renderer.render(scene, camera);
+                    }
+
+                    animate();
+                },
+                function (xhr) {
+                    // Progress update
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                function (error) {
+                    // Handle loading error
+                    console.error('An error happened while loading the STL model:', error);
+
+                    // Remove loading message if it exists
+                    if (loadingMessage.parentNode) {
+                        loadingMessage.parentNode.removeChild(loadingMessage);
+                    }
+
+                    // Show error message
+                    const errorMessage = document.createElement('p');
+                    errorMessage.textContent = 'Failed to load model. Please try again or view on GitHub.';
+                    errorMessage.style.color = 'red';
+                    errorMessage.style.textAlign = 'center';
+                    errorMessage.style.marginTop = '10px';
+                    container.appendChild(errorMessage);
+
+                    // Show fallback links
+                    const fallbackLinks = document.createElement('p');
+                    fallbackLinks.innerHTML = '<a href="' + stlUrl.replace('raw.githubusercontent.com', 'github.com') + '" target="_blank">View on GitHub</a>';
+                    fallbackLinks.style.textAlign = 'center';
+                    container.appendChild(fallbackLinks);
+                }
+            );
+        }
+    </script>
 </body>
 </html>

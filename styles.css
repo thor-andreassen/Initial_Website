@@ -136,6 +136,22 @@ nav a:hover {
     color: #2c3e50;
 }
 
+/* Model viewer styles */
+.model-container {
+    width: 100%;
+    height: 500px;
+    margin: 2rem 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.model-viewer {
+    width: 100%;
+    height: 100%;
+}
+
 /* About section */
 .profile-container {
     display: flex;
